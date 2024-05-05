@@ -1,0 +1,96 @@
+name: Deploy tinyurl resources
+on: workflow_dispatch
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy the infrastructure
+        run: |
+          az deployment group create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --template-file infra/main.bicep
+
+  build-function:
+    defaults:
+      run:
+        working-directory: api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Setup Azure Function Core Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install azure-functions-core-tools-4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Pack the function
+        run: func pack
+
+      - name: Upload the zip file
+        uses: actions/upload-artifact@v2
+        with:
+          name: function
+          path: api.zip
+
+  deploy-code:
+    needs: [build-function, deploy-infra]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Download the function
+        uses: actions/download-artifact@v2
+        with:
+          name: function
+
+      - name: Deploy the function
+        run: |
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+          az functionapp deployment source config-zip --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_FUNCTION_APP }} --src api.zip
+
+  deploy-frontend:
+    needs: [deploy-infra]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Setup static web app cli
+        run: |
+          npm install -g @azure/static-web-apps-cli
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the frontend
+        run: npm run build
+
+      - name: Deploy the frontend
+        run: |
+          cd frontend
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+          swa deploy --env production

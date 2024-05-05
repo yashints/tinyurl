@@ -1,0 +1,31 @@
+body,
+html {
+  height: 100%;
+}
+
+div#root {
+  height: 90%;
+}
+
+@media screen and (max-width: 768px) {
+  div#root {
+    height: 100%;
+  }
+}
+
+main {
+  height: 100%;
+}
+
+.vr {
+  display: inline-block;
+  align-self: stretch;
+  width: var(--bs-border-width);
+  min-height: 1em;
+  background-color: currentcolor;
+  opacity: 0.25;
+}
+
+.h-100 {
+  height: 100% !important;
+}
