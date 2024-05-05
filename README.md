@@ -25,3 +25,15 @@ For frontend I've used a basic create-react-app based application and it has a f
 
 ### API
 As for the APIs, I've used a few HTTP triggered functions to create, list and delete URLs, and a timer trigger function which pulls data from the log analytics workspace to update the page views for each route.
+
+## Monthly cost
+
+The total cost of hosting the app:
+
+| Service | Tier | Cost |
+| ------ | ------ | ------ |
+| Static web apps | Standard | $9 |
+| Azure Functions | Consumption | $0 for 1M requests per month |
+| Azure Monitor | Basic | $0 for 5GB ingestion |
+| Azure Table Storage | Standard | $0.5 for 1GB and 100K transactions |
+|     | Total |  $9.05 |
