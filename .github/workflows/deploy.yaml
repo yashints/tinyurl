@@ -1,8 +1,10 @@
 name: Deploy tinyurl resources
 on:
   push:
+    branches:
+      - main
     paths:
-      - frontend/public/**
+      - "**.html"
   workflow_dispatch:
 
 permissions:
