@@ -64,7 +64,7 @@ curl -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $PAT" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/yashints/tinyurl/actions/workflows/deployweb.yaml/dispatches \
+  https://api.github.com/repos/yashints/tinyurl/actions/workflows/deployweb.yaml/dispatches \
   -d '{"ref":"main"}'
 
 echo "Deployment triggered!"
