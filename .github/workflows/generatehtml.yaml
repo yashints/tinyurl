@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - "urls.json"
+      - "./util/generatehtml.sh"
   workflow_dispatch:
 
 jobs:
