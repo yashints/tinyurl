@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "20"
 
@@ -82,7 +82,7 @@ jobs:
         run: func pack
 
       - name: Upload the zip file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: function
           path: ./api/api.zip
@@ -158,6 +158,5 @@ jobs:
 
       - name: Deploy the frontend
         run: |
-          cd frontend
           az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
           swa deploy --env production
