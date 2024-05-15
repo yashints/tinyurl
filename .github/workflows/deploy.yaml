@@ -28,7 +28,7 @@ jobs:
         id: deploy-infra-resources
         uses: azure/arm-deploy@v2
         with:
-          scope: "Resource Group"
+          scope: "resourcegroup"
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
           template: ./infra/main.bicep
