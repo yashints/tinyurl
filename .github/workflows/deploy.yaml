@@ -1,10 +1,5 @@
 name: Deploy tinyurl resources
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "**.html"
   workflow_dispatch:
 
 permissions:
@@ -34,7 +29,6 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
           template: ./infra/main.bicep
-          parameters: "gitHubToken=${{ secrets.GITHUB_TOKEN }}"
           failOnStdErr: false
     outputs:
       functionAppName: ${{ steps.deploy-infra-resources.outputs.functionAppName }}

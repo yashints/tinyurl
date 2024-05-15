@@ -22,9 +22,6 @@ param staticAppName string = 'ui${uniqueString(resourceGroup().id)}web'
 @description('Location of the static app.')
 param staticWebAppLocation string = 'eastasia'
 
-@description('GitHub token.')
-param gitHubToken string
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageName
   location: location
@@ -143,10 +140,6 @@ resource functionApp 'Microsoft.Web/sites@2020-12-01' = {
         {
           name: 'TABLE_NAME'
           value: 'urls'
-        }
-        {
-          name: 'GITHUB_TOKEN'
-          value: gitHubToken
         }
       ]
     }

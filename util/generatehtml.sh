@@ -13,6 +13,9 @@ PAT="$1"
 REPO="yashints/tinyurl"
 BRANCH="main"
 
+# Delete all existing HTML files
+find frontend/public -name "*.html" ! -name "index.html" -exec rm -f {} \;
+
 # Replace with your actual JSON URL
 JSON_URL="https://raw.githubusercontent.com/yashints/tinyurl/main/urls.json"
 
