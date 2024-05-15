@@ -19,5 +19,5 @@ jobs:
       - name: Generate Static HTML files
         run: |
           chmod +x ./util/generatehtml.sh
-          ./util/generate-html.sh ${{ secrets.GITHUB_TOKEN }}
+          ./util/generatehtml.sh ${{ secrets.GITHUB_TOKEN }}
         shell: bash

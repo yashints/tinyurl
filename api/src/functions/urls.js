@@ -26,7 +26,7 @@ app.get("getUrls", {
       const url = await result;
       return { jsonBody: url };
     }
-    await getFileFromGitHub();
+
     const urls = await getUrls();
 
     return { jsonBody: urls };
@@ -66,15 +66,16 @@ app.post("createUrl", {
       pageViewCount: 0,
     };
 
+    await tableClient.createEntity(entity);
+
     //write to github
     const urls = await getUrls();
     const ok = await createFileOnGitHub(urls);
 
-    if (ok !== 200 || ok !== 201) {
-      throw new Error("Failed to write to GitHub");
+    if (ok != 200 && ok != 201) {
+      context.log(`Failed to write to GitHub`);
+      return { status: 500, jsonBody: { message: "Failed to write to GitHub" } };
     }
-
-    await tableClient.createEntity(entity);
 
     return { status: 201, jsonBody: { shortUrl, longUrl } };
   },
@@ -89,15 +90,16 @@ app.http("deleteUrl", {
 
     const body = await request.json();
 
+    await tableClient.deleteEntity("year", body.rowKey);
+
     //write to github
     const urls = await getUrls();
     const ok = await createFileOnGitHub(urls);
 
-    if (ok !== 200 || ok !== 201) {
-      throw new Error("Failed to write to GitHub");
+    if (ok != 200 && ok != 201) {
+      context.log(`Failed to write to GitHub`);
+      return { status: 500, jsonBody: { message: "Failed to write to GitHub" } };
     }
-
-    await tableClient.deleteEntity("year", body.rowKey);
 
     return { status: 204 };
   },

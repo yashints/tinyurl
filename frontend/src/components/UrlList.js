@@ -38,9 +38,9 @@ const Urls = ({ urls, notifyDelete }) => {
         <div className="row mt-2">
           {urls.map((url) => {
             return (
-              <div className="col-sm-12 col-md-6 col-lg-3 col-xs-12 mt-1">
-                <div className="card" key={url.rowKey}>
-                  <div class="card-header">
+              <div className="col-sm-12 col-md-6 col-lg-3 col-xs-12 mt-1" key={url.rowKey}>
+                <div className="card">
+                  <div className="card-header">
                     <b>{url.short}&nbsp;</b>
                     <button
                       title="Copy url"

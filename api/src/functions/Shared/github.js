@@ -6,6 +6,7 @@ axios.defaults.headers.common["Authorization"] = "Bearer " + process.env.GITHUB_
 axios.defaults.headers.common["X-GitHub-Api-Version"] = "2022-11-28";
 
 const createFileOnGitHub = async (data) => {
+  console.log("Creating file on GitHub");
   const base64Data = Buffer.from(JSON.stringify(data)).toString("base64");
 
   const body = {
@@ -21,6 +22,8 @@ const createFileOnGitHub = async (data) => {
   if (file) {
     body.sha = file.sha;
   }
+  console.log(body);
+  console.log(data);
   const res = await axios.put("", body);
   return res.status;
 };
