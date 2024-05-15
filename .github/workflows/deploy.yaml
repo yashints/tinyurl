@@ -1,5 +1,9 @@
 name: Deploy tinyurl resources
-on: workflow_dispatch
+on:
+  push:
+    paths:
+      - frontend/public/**
+  workflow_dispatch:
 
 jobs:
   deploy-infra:

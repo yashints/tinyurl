@@ -1,8 +1,19 @@
 const { app } = require("@azure/functions");
 const { TableClient } = require("@azure/data-tables");
+const { createFileOnGitHub, getFileFromGitHub } = require("./Shared/github");
 
 const tableName = process.env.TABLE_NAME || "urls";
 const tableClient = TableClient.fromConnectionString(process.env.AzureWebJobsStorage, tableName);
+
+const getUrls = async () => {
+  const result = tableClient.listEntities();
+  const urls = [];
+  for await (const entity of result) {
+    urls.push(entity);
+  }
+
+  return urls;
+};
 
 app.get("getUrls", {
   authLevel: "anonymous",
@@ -15,12 +26,8 @@ app.get("getUrls", {
       const url = await result;
       return { jsonBody: url };
     }
-
-    const result = tableClient.listEntities();
-    const urls = [];
-    for await (const entity of result) {
-      urls.push(entity);
-    }
+    await getFileFromGitHub();
+    const urls = await getUrls();
 
     return { jsonBody: urls };
   },
@@ -59,6 +66,14 @@ app.post("createUrl", {
       pageViewCount: 0,
     };
 
+    //write to github
+    const urls = await getUrls();
+    const ok = await createFileOnGitHub(urls);
+
+    if (ok !== 200 || ok !== 201) {
+      throw new Error("Failed to write to GitHub");
+    }
+
     await tableClient.createEntity(entity);
 
     return { status: 201, jsonBody: { shortUrl, longUrl } };
@@ -73,6 +88,14 @@ app.http("deleteUrl", {
     context.log(`Delete method called`);
 
     const body = await request.json();
+
+    //write to github
+    const urls = await getUrls();
+    const ok = await createFileOnGitHub(urls);
+
+    if (ok !== 200 || ok !== 201) {
+      throw new Error("Failed to write to GitHub");
+    }
 
     await tableClient.deleteEntity("year", body.rowKey);
 

@@ -1,3 +1,10 @@
+import copyIcon from "../assets/paste.png";
+
+const handleCopy = (text) => {
+  navigator.clipboard.writeText(text);
+  alert("Copied the text: " + text);
+};
+
 const Urls = ({ urls, notifyDelete }) => {
   const deleteRow = async (partitionKey, rowKey) => {
     try {
@@ -32,22 +39,32 @@ const Urls = ({ urls, notifyDelete }) => {
           {urls.map((url) => {
             return (
               <div className="col-sm-12 col-md-6 col-lg-3 col-xs-12 mt-1">
-                <div className="card p-2" key={url.rowKey}>
-                  <div className="card-body"></div>
-                  <h5 className="card-title">
-                    🌐 {url.short}&nbsp;
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      {url.pageViewCount}
-                    </span>
-                  </h5>
-                  <p className="card-text">{url.url}</p>
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    type="button"
-                    onClick={() => deleteRow(url.partitionKey, url.rowKey)}
-                  >
-                    Delete
-                  </button>
+                <div className="card" key={url.rowKey}>
+                  <div class="card-header">
+                    <b>{url.short}&nbsp;</b>
+                    <button
+                      title="Copy url"
+                      className="btn"
+                      onClick={() => handleCopy(`https://${url.short}`)}
+                    >
+                      <img src={copyIcon} alt="Copy to clipboard" />
+                    </button>
+                  </div>
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {url.pageViewCount}
+                      </span>
+                    </h5>
+                    <p className="card-text">{url.url}</p>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      type="button"
+                      onClick={() => deleteRow(url.partitionKey, url.rowKey)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             );

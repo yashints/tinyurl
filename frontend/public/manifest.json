@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Yashints' tiny URL",
+  "name": "This is a tiny URL for Yashints' blog",
   "icons": [
     {
       "src": "favicon.ico",
