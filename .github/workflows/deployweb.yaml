@@ -67,5 +67,5 @@ jobs:
       - name: Deploy the frontend
         run: |
           appName=$(az staticwebapp list -g ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
-          deployToken=$(az staticwebapp secrets list --name $appName --query "properties.apiKey")
+          deployToken=$(az staticwebapp secrets list --name $appName --query "properties.apiKey" -o tsv)
           swa deploy --env production -d $deployToken
