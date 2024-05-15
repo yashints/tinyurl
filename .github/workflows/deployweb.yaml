@@ -7,6 +7,10 @@ on:
       - "frontend/public/**"
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy-frontend:
     defaults:
