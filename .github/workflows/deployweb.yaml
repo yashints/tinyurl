@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "frontend/public/**"
+      - ".github/workflows/deployweb.yaml"
   workflow_dispatch:
 
 permissions:
@@ -64,4 +65,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy the frontend
-        run: swa deploy --env production
+        run: |
+          appName=$(az staticwebapp list -g tinyurl --query "[0].name")
+          deployToken=$(az staticwebapp secrets list --name $appName --query "properties.apiKey")
+          swa deploy --env production -d $deployToken
