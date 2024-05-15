@@ -1,4 +1,4 @@
-name: Generate static HTML
+name: Generate routes
 
 permissions:
   contents: write
@@ -10,17 +10,17 @@ on:
       - main
     paths:
       - "urls.json"
-      - "util/generatehtml.sh"
-      - ".github/workflows/generatehtml.yaml"
+      - "util/generateroutes.sh"
+      - ".github/workflows/generateroutes.yaml"
   workflow_dispatch:
 
 jobs:
-  generate-html:
+  generate-routes:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Generate Static HTML files
         run: |
-          chmod +x ./util/generatehtml.sh
-          ./util/generatehtml.sh ${{ secrets.GITHUB_TOKEN }}
+          chmod +x ./util/generateroutes.sh
+          ./util/generateroutes.sh ${{ secrets.GITHUB_TOKEN }}
         shell: bash

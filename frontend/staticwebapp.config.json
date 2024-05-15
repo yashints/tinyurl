@@ -4,5 +4,12 @@
   },
   "platform": {
     "apiRuntime": "node:18"
-  }
+  },
+  "routes": [
+    {
+      "route": "fps2p2",
+      "redirect": "https://yashints.dev/blog/2024/04/18/graph-sdk-v5/",
+      "statusCode": 301
+    }
+  ]
 }

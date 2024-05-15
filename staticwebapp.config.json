@@ -1,0 +1,30 @@
+{
+  "navigationFallback": {
+    "rewrite": "index.html"
+  },
+  "platform": {
+    "apiRuntime": "node:18"
+  },
+  "routes": [
+    {
+      "route": "fps2p2",
+      "redirect": "https://yashints.dev/blog/2024/04/18/graph-sdk-v5/",
+      "statusCode": 301
+    },
+    {
+      "route": "jr2dj4",
+      "redirect": "https://yashints.dev/blog/2024/04/13/gatsby-upgrade/",
+      "statusCode": 301
+    },
+    {
+      "route": "kvft4c",
+      "redirect": "https://yashints.dev/blog/2024/04/30/semantic-kernel/",
+      "statusCode": 301
+    },
+    {
+      "route": "n9ild6",
+      "redirect": "https://yashints.dev/blog/2024/05/13/semantic-kernel-plugins/",
+      "statusCode": 301
+    }
+  ]
+}

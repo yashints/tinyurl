@@ -6,7 +6,6 @@ export default function App({ pca }) {
   return (
     <Routes>
       <Route path="/" element={<AppHome pca={pca} />} />
-      <Route path="*" element={<NoMatch />} />
     </Routes>
   );
 }
