@@ -1,4 +1,4 @@
-name: Deploy tinyurl resources
+name: Deploy frontend only
 on:
   push:
     branches:
