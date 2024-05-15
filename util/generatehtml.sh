@@ -58,3 +58,13 @@ for row in $(echo "$JSON_DATA" | jq -r '.[] | tojson'); do
 done
 
 echo "HTML files created and pushed to the repository!"
+
+curl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer $PAT" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/yashints/tinyurl/actions/workflows/deployweb.yaml/dispatches \
+  -d '{"ref":"main"}'
+
+echo "Deployment triggered!"
