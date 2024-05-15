@@ -1,5 +1,8 @@
 name: Generate static HTML
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
