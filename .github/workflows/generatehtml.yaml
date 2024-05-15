@@ -2,6 +2,7 @@ name: Generate static HTML
 
 permissions:
   contents: write
+  actions: write
 
 on:
   push:
