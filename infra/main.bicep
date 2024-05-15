@@ -157,8 +157,8 @@ resource staticApp 'Microsoft.Web/staticSites@2022-03-01' = {
   name: staticAppName
   location: staticWebAppLocation
   sku: {
-    name: 'Free'
-    tier: 'Free'
+    name: 'Standard'
+    tier: 'Standard'
   }
   properties: {
     provider: 'Custom'
