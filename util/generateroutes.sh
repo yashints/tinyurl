@@ -6,6 +6,10 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+PAT="$1"
+REPO="yashints/tinyurl"
+BRANCH="main"
+
 # Read the urls.json file
 urls=$(jq -c '.[]' urls.json)
 
@@ -31,7 +35,7 @@ done
 
 # Add the routes array to the staticwebapp.config.json file
 filename="staticwebapp.config.json"
-jq --argjson routes "$routes" '.routes = $routes' ./frontend/$filename > $filename
+jq --argjson routes "$routes" '.routes = $routes' "./frontend/$filename" > $filename
 
 # Replace the old config file with the new one
 curl -X PUT \
