@@ -37,6 +37,8 @@ done
 filename="staticwebapp.config.json"
 jq --argjson routes "$routes" '.routes = $routes' "./frontend/$filename" > $filename
 
+sha=$(git hash-object ./frontend/staticwebapp.config.json)
+
 # Replace the old config file with the new one
 curl -X PUT \
       -H "Authorization: bearer $PAT" \
@@ -44,6 +46,7 @@ curl -X PUT \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       -d '{
           "message": "Add redirect",
+          "sha": "'"$sha"'",
           "committer":{"name":"Yas Adel Mehraban","email":"adel.mehrban@gmail.com"},
           "content": "'"$(base64 -w 0 "$filename")"'"
       }' \
