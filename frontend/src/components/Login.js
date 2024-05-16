@@ -4,8 +4,11 @@ import login from "../assets/login.png";
 const Login = () => {
   const { instance } = useMsal();
 
-  const initializeSignIn = () => {
-    instance.loginRedirect();
+  const initializeSignIn = async () => {
+    const accounts = instance.getAllAccounts();
+    if (accounts.length === 0) {
+      await instance.loginRedirect();
+    }
   };
 
   return (
