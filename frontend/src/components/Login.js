@@ -5,6 +5,7 @@ const Login = () => {
   const { instance } = useMsal();
 
   const initializeSignIn = async () => {
+    await instance.handleRedirectPromise();
     const accounts = instance.getAllAccounts();
     if (accounts.length === 0) {
       await instance.loginRedirect();
@@ -18,7 +19,7 @@ const Login = () => {
           title="login"
           type="button"
           onClick={initializeSignIn}
-          class="btn rounded-circle btn-sm me-3"
+          className="btn rounded-circle btn-sm me-3"
         >
           <img src={login} alt="Login" width="32px" />
         </button>
