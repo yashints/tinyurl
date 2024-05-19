@@ -1,4 +1,4 @@
-name: Generate routes
+name: Generate HTML
 
 permissions:
   contents: write
