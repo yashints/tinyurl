@@ -2,13 +2,12 @@ import { useMsal } from "@azure/msal-react";
 import login from "../assets/login.png";
 
 const Login = () => {
-  const { instance } = useMsal();
+  const { instance, inProgress } = useMsal();
 
-  const initializeSignIn = async () => {
-    await instance.handleRedirectPromise();
+  const initializeSignIn = () => {
     const accounts = instance.getAllAccounts();
-    if (accounts.length === 0) {
-      await instance.loginRedirect();
+    if (accounts.length === 0 && inProgress !== "login") {
+      instance.loginPopup();
     }
   };
 

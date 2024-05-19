@@ -1,0 +1,26 @@
+name: Generate routes
+
+permissions:
+  contents: write
+  actions: write
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "urls.json"
+      - "util/generatehtml.sh"
+      - ".github/workflows/generatehtml.yaml"
+  workflow_dispatch:
+
+jobs:
+  generate-html:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate Static HTML files
+        run: |
+          chmod +x ./util/generatehtml.sh
+          ./util/generatehtml.sh ${{ secrets.GITHUB_TOKEN }}
+        shell: bash

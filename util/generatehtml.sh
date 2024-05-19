@@ -26,11 +26,17 @@ function processRow() {
   short=$1
   url=$2
 
+  # get the html
+  rm -f "blog.html"
+  curl -s -o "blog.html" "$url"
+  ogTags=$(grep -E -o '<meta (property="og:|name="twitter:)[^>]+>' "blog.html")
+
   cat <<EOF > "${short}.html"
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="refresh" content="0;url=${url}">
+    ${ogTags}
 </head>
 <body>
     Redirecting to ${url}...

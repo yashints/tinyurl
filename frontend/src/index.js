@@ -32,9 +32,13 @@ msalInstance.initialize().then(() => {
   msalInstance.enableAccountStorageEvents();
 
   msalInstance.addEventCallback((event) => {
-    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
-      const account = event.payload.account;
-      msalInstance.setActiveAccount(account);
+    if (
+      (event.eventType === EventType.LOGIN_SUCCESS ||
+        event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS ||
+        event.eventType === EventType.SSO_SILENT_SUCCESS) &&
+      event.payload.account
+    ) {
+      msalInstance.setActiveAccount(event.payload.account);
     }
   });
 
@@ -42,7 +46,7 @@ msalInstance.initialize().then(() => {
     <React.StrictMode>
       <MsalProvider instance={msalInstance}>
         <BrowserRouter>
-          <App pca={msalInstance} />
+          <App />
         </BrowserRouter>
       </MsalProvider>
     </React.StrictMode>
