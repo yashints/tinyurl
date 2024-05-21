@@ -6,6 +6,11 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+if [ -z "$2" ]; then
+    echo "Error: Please provide a Path to the json object."
+    exit 1
+fi
+
 PAT="$1"
 REPO="yashints/tinyurl"
 BRANCH="main"
