@@ -20,6 +20,9 @@ jobs:
         working-directory: ./frontend
     runs-on: ubuntu-latest
     environment: production
+    env:
+      REACT_APP_CLIENT_ID: ${{ vars.REACT_APP_CLIENT_ID }}
+      REACT_APP_AUTHORITY: ${{ vars.REACT_APP_AUTHORITY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@main
