@@ -75,7 +75,7 @@ jobs:
         run: npm install
 
       - name: Pack the function
-        run: func pack
+        run: zip -r api.zip .
 
       - name: Upload the zip file
         uses: actions/upload-artifact@v4
