@@ -31,6 +31,17 @@ msalInstance.initialize().then(() => {
   // Optional - This will update account state if a user signs in from another tab or window
   msalInstance.enableAccountStorageEvents();
 
+  msalInstance.handleRedirectPromise().then(authResult=>{
+    // Check if user signed in 
+    const account = msalInstance.getActiveAccount();
+    if(!account){
+      // redirect anonymous user to login page 
+      msalInstance.loginRedirect();
+    }
+  }).catch(err=>{
+    console.log(err);
+  });
+
   msalInstance.addEventCallback((event) => {
     if (
       (event.eventType === EventType.LOGIN_SUCCESS ||
