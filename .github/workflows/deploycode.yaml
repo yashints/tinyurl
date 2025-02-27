@@ -57,7 +57,7 @@ jobs:
         run: |
           npm install
           npm run build
-          swa deploy --output-location ${{ env.OUTPUT_LOCATION }} --environment-name production
+          swa deploy --output-location ${{ env.OUTPUT_LOCATION }} --env production
         env:
           VITE_APP_CLIENT_ID: 6001765b-94fc-4e17-a55a-b8b66acc393a
           VITE_APP_AUTHORITY: https://login.microsoftonline.com/7175f825-a26f-4407-ae38-2dadd32dd3f9
