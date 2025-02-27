@@ -9,6 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@azure/msal-browser": "^4.5.0",
     "@azure/msal-react": "^3.0.5",
