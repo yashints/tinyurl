@@ -17,6 +17,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
 
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Install Tools
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg 
+          sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs 2>/dev/null)-prod $(lsb_release -cs 2>/dev/null) main" > /etc/apt/sources.list.d/dotnetdev.list'
+          sudo apt-get update
+          sudo apt-get install azure-functions-core-tools-4
+          npm install -g @azure/static-web-apps-cli
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -24,22 +38,27 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: get static web app token
-        id: get-swa-token
+      - name: Get App Info
+        id: get-app-info
         run: |
+          apiName=$(az functionapp list --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
           appName=$(az staticwebapp list -g ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
           deployToken=$(az staticwebapp secrets list --name $appName --query "properties.apiKey" -o tsv)
           echo "deploytoken=$deployToken" >> $GITHUB_OUTPUT
+          echo "apiName=$apiName" >> $GITHUB_OUTPUT
 
-      - name: Build And Deploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ steps.get-swa-token.outputs.deployToken }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: ${{ env.APP_LOCATION }}
-          api_location: ${{ env.API_LOCATION }}
-          output_location: ${{ env.OUTPUT_LOCATION }}
+      - name: Deploy API
+        working-directory: ${{ env.API_LOCATION }}
+        run: |
+          npm install
+          func azure functionapp publish ${{ steps.get-app-info.outputs.apiName }} --javascript
+
+      - name: Deploy Frontend
+        run: |
+          npm install
+          npm run build
+          swa deploy --api-location ${{ env.API_LOCATION }} --output-location ${{ env.OUTPUT_LOCATION }}
         env:
           VITE_APP_CLIENT_ID: 6001765b-94fc-4e17-a55a-b8b66acc393a
           VITE_APP_AUTHORITY: https://login.microsoftonline.com/7175f825-a26f-4407-ae38-2dadd32dd3f9
+          SWA_CLI_DEPLOYMENT_TOKEN: ${{ steps.get-app-info.outputs.deployToken }}

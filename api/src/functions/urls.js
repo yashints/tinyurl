@@ -18,6 +18,13 @@ const getUrls = async () => {
   return urls;
 };
 
+app.get("health", {
+  handler: async (request, context) => {
+    context.log(`Http function processed request for url "${request.url}"`);
+    return { status: 200, body: "Healthy" };
+  },
+});
+
 app.get("getUrls", {
   authLevel: "anonymous",
   route: "urls/{shortUrl?}",
