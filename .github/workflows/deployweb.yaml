@@ -1,11 +1,8 @@
-name: Deploy frontend only
+name: Deploy code
 on:
   push:
     branches:
       - main
-    paths:
-      - "frontend/**"
-      - ".github/workflows/deployweb.yaml"
   workflow_dispatch:
 
 permissions:
