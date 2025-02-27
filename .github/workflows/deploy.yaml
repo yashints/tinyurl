@@ -26,141 +26,14 @@ jobs:
         uses: azure/arm-deploy@v2
         with:
           scope: "resourcegroup"
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
           template: ./infra/main.bicep
           failOnStdErr: false
     outputs:
       functionAppName: ${{ steps.deploy-infra-resources.outputs.functionAppName }}
 
-  build-function:
-    defaults:
-      run:
-        working-directory: api
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-
-      - name: Setup Azure Function Core Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install azure-functions-core-tools-4
-
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Pack the function
-        run: zip -r api.zip .
-
-      - name: Upload the zip file
-        uses: actions/upload-artifact@v4
-        with:
-          name: function
-          path: ./api/api.zip
-
   deploy-code:
-    needs: [build-function, deploy-infra]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Download the function
-        uses: actions/download-artifact@v4
-        with:
-          name: function
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy the function
-        run: |
-          az functionapp deployment source config-zip --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ needs.deploy-infra.outputs.functionAppName }} --src api.zip
-
-  deploy-frontend:
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./frontend
     needs: [deploy-infra]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "20"
-
-      - name: Setup static web app cli
-        run: |
-          npm install -g @azure/static-web-apps-cli
-
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the frontend
-        run: npm run build
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy the frontend
-        run: |
-          appName=$(az staticwebapp list -g ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
-          deployToken=$(az staticwebapp secrets list --name $appName --query "properties.apiKey" -o tsv)
-          swa deploy --env production -d $deployToken
+    uses: ./.github/workflows/deploycode.yaml
+    secrets: inherit

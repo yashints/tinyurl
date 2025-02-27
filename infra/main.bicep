@@ -158,5 +158,15 @@ resource staticApp 'Microsoft.Web/staticSites@2022-03-01' = {
   }
 }
 
+@description('Link backend to static web app')
+resource linkedStaticWebAppBackend 'Microsoft.Web/staticSites/linkedBackends@2023-12-01' = {
+  parent: staticApp
+  name: 'linkedBackend'
+  properties: {
+    backendResourceId: functionApp.id
+    region: location
+  }
+}
+
 @description('Name of the function app.')
 output functionAppName string = functionApp.name

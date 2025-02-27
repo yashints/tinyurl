@@ -3,7 +3,10 @@ const { TableClient } = require("@azure/data-tables");
 const { createFileOnGitHub, getFileFromGitHub } = require("./Shared/github");
 
 const tableName = process.env.TABLE_NAME || "urls";
-const tableClient = TableClient.fromConnectionString(process.env.AzureWebJobsStorage, tableName);
+const tableClient = TableClient.fromConnectionString(
+  process.env.AzureWebJobsStorage,
+  tableName
+);
 
 const getUrls = async () => {
   const result = tableClient.listEntities();
@@ -28,7 +31,7 @@ app.get("getUrls", {
     }
 
     const urls = await getUrls();
-
+    console.log(urls);
     return { jsonBody: urls };
   },
 });
@@ -52,7 +55,8 @@ app.post("createUrl", {
 
     if (!shortUrl) {
       shortUrl = `yas.fyi/${
-        Math.random().toString(32).substring(2, 5) + Math.random().toString(32).substring(2, 5)
+        Math.random().toString(32).substring(2, 5) +
+        Math.random().toString(32).substring(2, 5)
       }`;
     } else {
       shortUrl = `yas.fyi/${shortUrl}`;
@@ -74,7 +78,10 @@ app.post("createUrl", {
 
     if (ok != 200 && ok != 201) {
       context.log(`Failed to write to GitHub`);
-      return { status: 500, jsonBody: { message: "Failed to write to GitHub" } };
+      return {
+        status: 500,
+        jsonBody: { message: "Failed to write to GitHub" },
+      };
     }
 
     return { status: 201, jsonBody: { shortUrl, longUrl } };
@@ -98,7 +105,10 @@ app.http("deleteUrl", {
 
     if (ok != 200 && ok != 201) {
       context.log(`Failed to write to GitHub`);
-      return { status: 500, jsonBody: { message: "Failed to write to GitHub" } };
+      return {
+        status: 500,
+        jsonBody: { message: "Failed to write to GitHub" },
+      };
     }
 
     return { status: 204 };
